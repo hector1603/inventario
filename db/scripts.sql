@@ -20,11 +20,10 @@ SELECT * FROM categorias;
 
 DROP TABLE IF EXISTS unidades_medida;
 CREATE TABLE unidades_medida(
-	codigo_udm serial not null,
-	nombre varchar(100) not null,
+	nombre varchar(50) not null,
 	descripcion varchar(50) not null,
 	categoria_udm char(1) not null,
-	constraint unidades_medida_pk primary key(codigo_udm),
+	constraint unidades_medida_pk primary key(nombre),
 	constraint categoria_unidad_medida_unidades_medida_fk FOREIGN KEY(categoria_udm)
 	references categorias_unidad_medida(codigo)
 );
@@ -56,29 +55,29 @@ DROP TABLE IF EXISTS productos;
 CREATE TABLE productos(
 	codigo_prod serial not null,
 	nombre varchar(100) not null,
-	udm int not null,
+	udm varchar(50) not null,
 	precio_venta money not null,
 	tiene_iva boolean not null,
 	coste money not null,
 	categoria int not null,
 	stock int not null,
 	constraint productos_pk primary key(codigo_prod),
-	constraint unidades_medida_productos_fk FOREIGN KEY(udm) REFERENCES unidades_medida(codigo_udm),
+	constraint unidades_medida_productos_fk FOREIGN KEY(udm) REFERENCES unidades_medida(nombre),
 	constraint categorias_productos_fk FOREIGN KEY(categoria) REFERENCES categorias(codigo_cat)
 );
 
 INSERT INTO productos(nombre, udm, precio_venta, tiene_iva, coste, categoria, stock)
-				VALUES('Coca_cola pequeña', 3, 0.5804, true, 0.3729, 7, 105),
-						('Salsa de tomate', 6, 0.95, true, 0.8736, 3, 0),
-						('Mostaza', 6, 0.95, true, 0.89, 3, 0),
-						('Fuze tea', 3, 0.80, true, 0.70, 7, 49);
+				VALUES('Coca_cola pequeña', 'ml', 0.5804, true, 0.3729, 7, 105),
+						('Salsa de tomate', 'kg', 0.95, true, 0.8736, 3, 0),
+						('Mostaza', 'kg', 0.95, true, 0.89, 3, 0),
+						('Fuze tea', 'ml', 0.80, true, 0.70, 7, 49);
 SELECT * FROM productos;
 
 DROP TABLE IF EXISTS historial_stock;
 CREATE TABLE historial_stock(
 	codigo serial not null,
 	fecha timestamp,
-	referencia varchar(50) not null, 19:59
+	referencia varchar(50) not null,
 	producto int not null,
 	cantidad int not null,
 	constraint historial_stock_pk primary key(codigo),
