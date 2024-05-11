@@ -2,7 +2,9 @@ package com.krakedev.inventarios.servicios;
 
 import java.util.ArrayList;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -19,13 +21,29 @@ public class ServiciosProductos {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response buscar(@PathParam("sub")String subcadena) {
-		ProductosBDD prodBDD = new ProductosBDD();
+		ProductosBDD prod = new ProductosBDD();
 		ArrayList<Producto> productos = null;
 		
 		try {
-			productos = prodBDD.buscar(subcadena);
+			productos = prod.buscar(subcadena);
 			return Response.ok(productos).build();
 		} catch(KrakeDevExcepcion e) {
+			e.printStackTrace();
+			return Response.serverError().build();
+		}
+	}
+	
+	@Path("insertar")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response insertar(Producto producto) {
+		System.out.println(">>>>>> " + producto);
+		
+		ProductosBDD prod = new ProductosBDD();
+		try {
+			prod.insertar(producto);
+			return Response.ok().build();
+		} catch (Exception e) {
 			e.printStackTrace();
 			return Response.serverError().build();
 		}
