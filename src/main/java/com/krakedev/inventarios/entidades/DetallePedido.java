@@ -9,6 +9,7 @@ public class DetallePedido {
 	private int cantidadSolicitada;
 	private BigDecimal subtotal;
 	private int cantidadRecibida;
+	
 	public int getCodigo() {
 		return codigo;
 	}
