@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -75,6 +76,10 @@ public class PedidosBDD {
 	    Connection conexion = null; 
 	    PreparedStatement psCabecera = null;
 	    PreparedStatement psDetalle = null;
+	    PreparedStatement psHistorialStock = null; 
+	    
+	    Date fechaActual = new Date();
+	    Timestamp fechaHoraActual = new Timestamp(fechaActual.getTime());
 	    
 	    try {
 	        conexion = ConexionBDD.obtenerConexion();
@@ -94,28 +99,26 @@ public class PedidosBDD {
 	            
 	            psDetalle.setBigDecimal(2, subtotal);
 	            psDetalle.setInt(3, detalleRecibido.getCodigo());
+	            
 	            psDetalle.executeUpdate();
+	            
+	            psHistorialStock = conexion.prepareStatement("INSERT INTO historial_stock (fecha, referencia, producto, cantidad) "
+	            		+ "VALUES (?, ?, ?, ?)");
+	            psHistorialStock.setTimestamp(1, fechaHoraActual);
+	            psHistorialStock.setString(2, "Pedido " + pedido.getNumero());
+	            psHistorialStock.setInt(3, detalleRecibido.getProducto().getCodigo());
+	            psHistorialStock.setInt(4, detalleRecibido.getCantidadRecibida());
+	            
+	            psHistorialStock.executeUpdate();
 	        }
 	        
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	        throw new KrakeDevExcepcion("Error al recibir el pedido. Detalle: " + e.getMessage());
-	    } finally {
-	        try {
-	            if (psCabecera != null) {
-	                psCabecera.close();
-	            }
-	            if (psDetalle != null) {
-	                psDetalle.close();
-	            }
-	            if (conexion != null) {
-	                conexion.close();
-	            }
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
-	    }
+	    } catch (KrakeDevExcepcion e) {
+			e.printStackTrace();
+			throw e;
+		} 
 	}
-
 
 }
