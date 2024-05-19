@@ -46,7 +46,8 @@ public class PedidosBDD {
 			
 			for(int i = 0; i < detallesPedido.size(); i++) {
 				detalle = detallesPedido.get(i);
-				psDet = conexion.prepareStatement("INSERT INTO detalle_pedidos(cabecera_pedido, producto, cantidad_solicitada, subtotal, cantidad_recibida) "
+				psDet = conexion.prepareStatement("INSERT INTO detalle_pedidos(cabecera_pedido, producto, "
+						+ "cantidad_solicitada, subtotal, cantidad_recibida) "
 						+ "VALUES(?,?,?,?,?)");
 				
 				psDet.setInt(1, codigoCabecera);
