@@ -8,6 +8,11 @@ public class EstadoPedido {
 		
 	}
 
+	public EstadoPedido(String codigo) {
+		super();
+		this.codigo = codigo;
+	}
+	
 	public EstadoPedido(String codigo, String descripcion) {
 		super();
 		this.codigo = codigo;

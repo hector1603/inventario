@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -33,6 +34,22 @@ public class ServiciosProductos {
 		}
 	}
 	
+	@Path("buscarprod/{sub}")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response buscarprov(@PathParam("sub")String subcadena) {
+		ProductosBDD prod = new ProductosBDD();
+		ArrayList<Producto> productos = null;
+		
+		try {
+			productos = prod.buscarPorIdentificador(subcadena);
+			return Response.ok(productos).build();
+		} catch(KrakeDevExcepcion e) {
+			e.printStackTrace();
+			return Response.serverError().build();
+		}
+	}
+	
 	@Path("insertar")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -42,6 +59,22 @@ public class ServiciosProductos {
 		ProductosBDD prod = new ProductosBDD();
 		try {
 			prod.insertar(producto);
+			return Response.ok().build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.serverError().build();
+		}
+	}
+	
+	@Path("actualizar")
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response actualizar(Producto producto) {
+		System.out.println("Producto actualizado >>>>>> " + producto);
+		
+		ProductosBDD prod = new ProductosBDD();
+		try {
+			prod.actualizar(producto);
 			return Response.ok().build();
 		} catch (Exception e) {
 			e.printStackTrace();

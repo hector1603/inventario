@@ -33,6 +33,22 @@ public class ServiciosProveedores{
 		}
 	}
 	
+	@Path("buscarprov/{sub}")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response buscarProv(@PathParam("sub")String subcadena) {
+		ProveedoresBDD provBDD = new ProveedoresBDD();
+		ArrayList<Proveedor> proveedores = null;
+		
+		try {
+			proveedores = provBDD.buscarPorIdentificador(subcadena);
+			return Response.ok(proveedores).build();
+		} catch(KrakeDevExcepcion e) {
+			e.printStackTrace();
+			return Response.serverError().build();
+		}
+	}
+	
 	@Path("insertar")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)

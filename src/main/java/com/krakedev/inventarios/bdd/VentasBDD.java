@@ -1,6 +1,7 @@
 package com.krakedev.inventarios.bdd;
 
 import java.math.BigDecimal;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,9 +11,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 
-import com.krakedev.inventarios.entidades.DetallePedido;
 import com.krakedev.inventarios.entidades.DetalleVenta;
-import com.krakedev.inventarios.entidades.Pedido;
 import com.krakedev.inventarios.entidades.Venta;
 import com.krakedev.inventarios.excepciones.KrakeDevExcepcion;
 import com.krakedev.inventarios.utils.ConexionBDD;

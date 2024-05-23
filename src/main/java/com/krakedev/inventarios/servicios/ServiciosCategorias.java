@@ -7,26 +7,25 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.krakedev.inventarios.bdd.PedidosBDD;
-import com.krakedev.inventarios.entidades.Pedido;
+import com.krakedev.inventarios.bdd.CategoriasBDD;
+import com.krakedev.inventarios.entidades.Categoria;
 import com.krakedev.inventarios.excepciones.KrakeDevExcepcion;
 
-@Path("pedidos")
-public class ServiciosPedidos {
-	@Path("registrar")
+@Path("categorias")
+public class ServiciosCategorias {
+	@Path("crear")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response insertar(Pedido pedido) {
-		System.out.println(">>>>>> " + pedido);
+	public Response insertar(Categoria categoria) {
+		System.out.println(">>>>>> " + categoria);
 		
-		PedidosBDD p = new PedidosBDD();
+		CategoriasBDD cat = new CategoriasBDD();
 		try {
-			p.crear(pedido);
+			cat.crear(categoria);
 			return Response.ok().build();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -34,15 +33,15 @@ public class ServiciosPedidos {
 		}
 	}
 	
-	@Path("recibir")
+	@Path("actualizar")
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response actualizar(Pedido pedido) {
-		System.out.println("Pedido recibido >>>>>> " + pedido);
+	public Response actualizar(Categoria categoria) {
+		System.out.println("Producto actualizado >>>>>> " + categoria);
 		
-		PedidosBDD ped = new PedidosBDD();
+		CategoriasBDD cat = new CategoriasBDD();
 		try {
-			ped.recibirPedido(pedido);
+			cat.actualizar(categoria);
 			return Response.ok().build();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -50,19 +49,20 @@ public class ServiciosPedidos {
 		}
 	}
 	
-	@Path("buscar/{sub}")
+	@Path("mostrar")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response buscar(@PathParam("sub")String subcadena) {
-		PedidosBDD pedBDD = new PedidosBDD();
-		ArrayList<Pedido> pedidos = null;
+	public Response recuperar() throws KrakeDevExcepcion{
+		CategoriasBDD cat = new CategoriasBDD();
+		ArrayList<Categoria> categorias = null;
 		
 		try {
-			pedidos = pedBDD.buscarPedidoPorProveedor(subcadena);
-			return Response.ok(pedidos).build();
+			categorias = cat.recuperarTodas();
+			return Response.ok(categorias).build();
 		} catch(KrakeDevExcepcion e) {
 			e.printStackTrace();
 			return Response.serverError().build();
 		}
 	}
+
 }
