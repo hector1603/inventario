@@ -37,18 +37,19 @@ public class ServiciosProductos {
 	@Path("buscarprod/{sub}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response buscarprov(@PathParam("sub")String subcadena) {
-		ProductosBDD prod = new ProductosBDD();
-		ArrayList<Producto> productos = null;
-		
-		try {
-			productos = prod.buscarPorIdentificador(subcadena);
-			return Response.ok(productos).build();
-		} catch(KrakeDevExcepcion e) {
-			e.printStackTrace();
-			return Response.serverError().build();
-		}
+	public Response buscarProductoPorIdentificador(@PathParam("sub") String identificador) {
+	    ProductosBDD prod = new ProductosBDD();
+	    Producto producto = null;
+	    
+	    try {
+	        producto = prod.buscarPorIdentificador(identificador);
+	        return Response.ok(producto).build(); 
+	    } catch(KrakeDevExcepcion e) {
+	        e.printStackTrace();
+	        return Response.serverError().build();
+	    }
 	}
+
 	
 	@Path("insertar")
 	@POST

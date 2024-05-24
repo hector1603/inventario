@@ -126,42 +126,37 @@ public class PedidosBDD {
 
 	
 	public ArrayList<Pedido> buscarPedidoPorProveedor(String subcadena) throws KrakeDevExcepcion {
-	    ArrayList<Pedido> pedidos = new ArrayList<Pedido>();
+	    ArrayList<Pedido> pedidos = new ArrayList<>();
 	    Connection conexion = null;
 	    PreparedStatement psPedido = null;
 	    ResultSet rs = null;
 	    Pedido pedido = null;
 	    try {
 	        conexion = ConexionBDD.obtenerConexion();
-	        String sql = "SELECT prov.tipo_documento, prov.nombre AS nombre_proveedor, "
-	                   + "cp.fecha, cp.estado, dp.cantidad_solicitada, dp.subtotal, dp.cantidad_recibida "
+	        String sql = "SELECT prov.identificador, prov.tipo_documento, prov.nombre AS nombre_proveedor, "
+	                   + "cp.fecha, cp.estado, dp.cantidad_solicitada, CAST(dp.subtotal AS DECIMAL(5,2)), dp.cantidad_recibida "
 	                   + "FROM proveedores prov "
 	                   + "JOIN tipo_documento td ON prov.tipo_documento = td.codigo "
 	                   + "JOIN cabecera_pedidos cp ON prov.identificador = cp.proveedor "
 	                   + "JOIN detalle_pedidos dp ON cp.numero = dp.cabecera_pedido "
-	                   + "WHERE prov.nombre LIKE ?";
+	                   + "WHERE prov.identificador = ?";
 	        psPedido = conexion.prepareStatement(sql);
-	        psPedido.setString(1, "%" + subcadena + "%");
-	        
-	        // Imprimir la consulta y el parámetro para depuración
-	        System.out.println("Ejecutando consulta: " + sql);
-	        System.out.println("Con parámetro: " + "%" + subcadena + "%");
-	        
+	        psPedido.setString(1, subcadena);
+	      	        
 	        rs = psPedido.executeQuery();
 
 	        while (rs.next()) {
+	        	String identificador = rs.getString("identificador");
 	            String nombreProveedor = rs.getString("nombre_proveedor");
-	            //String tipoDocumento = rs.getString("tipo_documento"); // Descomentar si es necesario
 	            Date fecha = rs.getDate("fecha");
 	            String estado = rs.getString("estado");
 	            int cantidadSolicitada = rs.getInt("cantidad_solicitada");
-	            String subtotalString = rs.getString("subtotal");
-	            BigDecimal subtotal = new BigDecimal(subtotalString.replace(",", "."));
+	            BigDecimal subtotal = rs.getBigDecimal("subtotal");
 	            int cantidadRecibida = rs.getInt("cantidad_recibida");
 
 	            Proveedor proveedor = new Proveedor();
 	            proveedor.setNombre(nombreProveedor);
-	            //proveedor.setTipoDocumento(tipoDocumento); // Descomentar si es necesario
+	            proveedor.setIdentificador(identificador);
 
 	            pedido = new Pedido();
 	            pedido.setProveedor(proveedor);
@@ -181,17 +176,11 @@ public class PedidosBDD {
 	        }
 	    } catch (SQLException e) {
 	        e.printStackTrace();
-	        throw new KrakeDevExcepcion("Error al consultar. Detalle: " + e.getMessage());
-	    } finally {
-	        try {
-	            if (rs != null) rs.close();
-	            if (psPedido != null) psPedido.close();
-	            if (conexion != null) conexion.close();
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	            throw new KrakeDevExcepcion("Error al cerrar la conexión. Detalle: " + e.getMessage());
-	        }
-	    }
+	        throw new KrakeDevExcepcion("Error al recibir el pedido. Detalle: " + e.getMessage());
+	    } catch (KrakeDevExcepcion e) {
+			e.printStackTrace();
+			throw e;
+		}
 	    return pedidos;
 	}
 
